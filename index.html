@@ -34,50 +34,55 @@
       max-width: 500px;
       padding: 30px;
       background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
       margin: 20px;
-      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .tenor-gif-embed {
-      max-width: 200px;
-      pointer-events: none;
+      width: 200px !important;
+      margin: 0 auto;
     }
 
-    h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-    p { color: #fdfdfd; font-weight: bold; }
+    h1 { font-size: 1.6rem; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+    p { color: #fff; font-weight: bold; opacity: 0.9; }
 
     .btn-group {
       display: flex;
-      gap: 25px;
+      gap: 20px;
       margin-top: 10px;
       position: relative;
-      min-height: 50px;
+      min-height: 60px;
       width: 100%;
       justify-content: center;
+      align-items: center;
     }
 
-    .btn-group a, button {
+    button {
       text-decoration: none;
       color: #111;
       background: #fff;
-      padding: 12px 30px;
-      border-radius: 66px;
+      padding: 12px 28px;
+      border-radius: 50px;
       border: none;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0.5rem 1rem 3rem rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, background 0.2s;
     }
 
     #noBtn {
-      position: relative;
       z-index: 10;
+      white-space: nowrap;
     }
 
-    #yesBtn:hover { background: #ff4d7d; color: white; transform: scale(1.1); }
+    #yesBtn {
+      z-index: 11;
+    }
+
+    #yesBtn:hover { background: #e11d48; color: white; }
 
     .hidden { display: none !important; }
   </style>
@@ -88,9 +93,9 @@
 
 <div class="container" id="mainCard">
   <div id="contentArea">
-    <div id="gifBox" class="tenor-gif-embed"></div>
-    <h1 id="mainTitle">Do you love me? 🤗</h1>
-    <p id="subTitle">Chiku is all yours</p>
+    <div id="gifBox"></div>
+    <h1 id="mainTitle">willl you be my valentine?</h1>
+    <p id="subTitle">yashiiii is all urs</p>
   </div>
 
   <div class="btn-group" id="buttonGroup">
@@ -105,75 +110,92 @@
   const subTitle = document.getElementById('subTitle');
   const noBtn = document.getElementById('noBtn');
   const yesBtn = document.getElementById('yesBtn');
-  const mainCard = document.getElementById('mainCard');
 
   let stage = 1;
 
-  // Data for the different stages of "No"
+  // Your specific GIF IDs from the links provided
   const stages = {
     1: {
-      gif: "22885016",
-      title: "Do you love me? 🤗",
-      sub: "Chiku is all yours"
+      id: "16258414434997781747", // Cute Peach/Goma
+      title: "will you be my vallleeennnttiineeee??",
+      sub: "yashiiii is all yours"
     },
     2: {
-      gif: "22050818",
+      id: "15195810", // Couple Forgive Me
       title: "SOCHLE VPS CHIKNEYYYY🙄",
       sub: "BELT SE KHOOB MAARUNGI"
     },
     3: {
-      gif: "15195810",
+      id: "13518544", // Angry Mochi
       title: "himmat bhot aa gai h tujhme😣",
       sub: "krni he padegi belt se kutai"
     },
     4: {
-      gif: "15974530976611222074",
+      id: "15974530976611222074", // Peach Goma Phone
       title: "kyaaa BAKETIIII haii ye",
       sub: "bhut glt baat hai yrr😭"
     }
   };
 
   function loadStage(s) {
-    gifBox.innerHTML = `<div class="tenor-gif-embed" data-postid="${stages[s].gif}" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>`;
+    // Clear old GIF
+    gifBox.innerHTML = '';
+    
+    // Create new Tenor embed
+    const div = document.createElement('div');
+    div.className = "tenor-gif-embed";
+    div.setAttribute('data-postid', stages[s].id);
+    div.setAttribute('data-share-method', 'host');
+    div.setAttribute('data-aspect-ratio', '1');
+    div.setAttribute('data-width', '100%');
+    gifBox.appendChild(div);
+
     mainTitle.innerText = stages[s].title;
     subTitle.innerText = stages[s].sub;
     
-    // Re-run Tenor script to load new GIF
+    // Refresh Tenor script
+    const oldScript = document.getElementById('tenor-script');
+    if (oldScript) oldScript.remove();
     const script = document.createElement('script');
+    script.id = 'tenor-script';
     script.src = "https://tenor.com/embed.js";
     script.async = true;
     document.body.appendChild(script);
   }
 
-  // Initial load
+  // Initial Load
   loadStage(1);
 
   // No Button Logic
-  noBtn.addEventListener('click', () => {
+  noBtn.addEventListener('click', (e) => {
     if (stage < 4) {
       stage++;
       loadStage(stage);
+    } else {
+      // Prevent clicking if it's in runaway mode
+      e.preventDefault();
     }
   });
 
-  // Random movement for "No" at Stage 4
+  // Runaway Logic for Stage 4
   noBtn.addEventListener('mouseenter', () => {
     if (stage === 4) {
-      const x = Math.floor(Math.random() * 80);
-      const y = Math.floor(Math.random() * 80);
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+      
       noBtn.style.position = "fixed";
-      noBtn.style.left = x + "%";
-      noBtn.style.top = y + "%";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
     }
   });
 
   // Yes Button Logic
   yesBtn.addEventListener('click', () => {
-    // Final Success Stage
     document.getElementById('buttonGroup').classList.add('hidden');
     subTitle.classList.add('hidden');
     
-    gifBox.innerHTML = `<div class="tenor-gif-embed" data-postid="253027946666209433" data-share-method="host" data-aspect-ratio="1.37853" data-width="100%"></div>`;
+    // Success GIF (Mochi Cat)
+    gifBox.innerHTML = `<div class="tenor-gif-embed" data-postid="253027946666209433" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>`;
     mainTitle.innerText = "mfkerrr huhh finallyyyy huhhhhh";
     
     const script = document.createElement('script');
@@ -181,20 +203,13 @@
     script.async = true;
     document.body.appendChild(script);
 
-    // Confetti
-    const duration = 5 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
-
-    function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-    const interval = setInterval(function() {
-      const timeLeft = animationEnd - Date.now();
-      if (timeLeft <= 0) return clearInterval(interval);
-      const particleCount = 50 * (timeLeft / duration);
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-    }, 250);
+    // Blast Confetti
+    const end = Date.now() + (5 * 1000);
+    (function frame() {
+      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    }());
   });
 </script>
 
