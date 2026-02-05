@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>for Aditya❤️</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+    
+    body {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #d9a6a6;
+      overflow: hidden;
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      gap: 20px;
+      max-width: 500px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border-radius: 20px;
+      margin: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .tenor-gif-embed {
+      max-width: 200px;
+      pointer-events: none;
+    }
+
+    h1 { font-size: 1.8rem; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    p { color: #fdfdfd; font-weight: bold; }
+
+    .btn-group {
+      display: flex;
+      gap: 25px;
+      margin-top: 10px;
+      position: relative;
+      min-height: 50px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-group a, button {
+      text-decoration: none;
+      color: #111;
+      background: #fff;
+      padding: 12px 30px;
+      border-radius: 66px;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0.5rem 1rem 3rem rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    #noBtn {
+      position: relative;
+      z-index: 10;
+    }
+
+    #yesBtn:hover { background: #ff4d7d; color: white; transform: scale(1.1); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<div class="container" id="mainCard">
+  <div id="contentArea">
+    <div id="gifBox" class="tenor-gif-embed"></div>
+    <h1 id="mainTitle">Do you love me? 🤗</h1>
+    <p id="subTitle">Chiku is all yours</p>
+  </div>
+
+  <div class="btn-group" id="buttonGroup">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+</div>
+
+<script>
+  const gifBox = document.getElementById('gifBox');
+  const mainTitle = document.getElementById('mainTitle');
+  const subTitle = document.getElementById('subTitle');
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const mainCard = document.getElementById('mainCard');
+
+  let stage = 1;
+
+  // Data for the different stages of "No"
+  const stages = {
+    1: {
+      gif: "22885016",
+      title: "Do you love me? 🤗",
+      sub: "Chiku is all yours"
+    },
+    2: {
+      gif: "22050818",
+      title: "SOCHLE VPS CHIKNEYYYY🙄",
+      sub: "BELT SE KHOOB MAARUNGI"
+    },
+    3: {
+      gif: "15195810",
+      title: "himmat bhot aa gai h tujhme😣",
+      sub: "krni he padegi belt se kutai"
+    },
+    4: {
+      gif: "15974530976611222074",
+      title: "kyaaa BAKETIIII haii ye",
+      sub: "bhut glt baat hai yrr😭"
+    }
+  };
+
+  function loadStage(s) {
+    gifBox.innerHTML = `<div class="tenor-gif-embed" data-postid="${stages[s].gif}" data-share-method="host" data-aspect-ratio="1" data-width="100%"></div>`;
+    mainTitle.innerText = stages[s].title;
+    subTitle.innerText = stages[s].sub;
+    
+    // Re-run Tenor script to load new GIF
+    const script = document.createElement('script');
+    script.src = "https://tenor.com/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }
+
+  // Initial load
+  loadStage(1);
+
+  // No Button Logic
+  noBtn.addEventListener('click', () => {
+    if (stage < 4) {
+      stage++;
+      loadStage(stage);
+    }
+  });
+
+  // Random movement for "No" at Stage 4
+  noBtn.addEventListener('mouseenter', () => {
+    if (stage === 4) {
+      const x = Math.floor(Math.random() * 80);
+      const y = Math.floor(Math.random() * 80);
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "%";
+      noBtn.style.top = y + "%";
+    }
+  });
+
+  // Yes Button Logic
+  yesBtn.addEventListener('click', () => {
+    // Final Success Stage
+    document.getElementById('buttonGroup').classList.add('hidden');
+    subTitle.classList.add('hidden');
+    
+    gifBox.innerHTML = `<div class="tenor-gif-embed" data-postid="253027946666209433" data-share-method="host" data-aspect-ratio="1.37853" data-width="100%"></div>`;
+    mainTitle.innerText = "mfkerrr huhh finallyyyy huhhhhh";
+    
+    const script = document.createElement('script');
+    script.src = "https://tenor.com/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Confetti
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+    function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+      if (timeLeft <= 0) return clearInterval(interval);
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+  });
+</script>
+
+</body>
+</html>
